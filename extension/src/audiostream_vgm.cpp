@@ -77,12 +77,14 @@ void AudioStreamPlaybackVGM::setAudioStream(Ref<AudioStreamVGM> audioStream) {
 
 void AudioStreamPlaybackVGM::_start(double from_pos) {
 	xmp_start_player(ctx, mix_rate, 0);
+	//gme_start_track
 	active = true;
 }
 
 void AudioStreamPlaybackVGM::_stop() {
 	active = false;
 	xmp_stop_vgm(ctx);
+	//gme_set_fade?
 }
 
 void AudioStreamPlaybackVGM::_seek(double position) {
@@ -92,6 +94,7 @@ void AudioStreamPlaybackVGM::_seek(double position) {
 
 	// "position" is in seconds, cmp_seek_time expects ms
 	xmp_seek_time(ctx, position * 1000);
+	//gme_seek
 }
 
 bool AudioStreamPlaybackVGM::_is_playing() const {
