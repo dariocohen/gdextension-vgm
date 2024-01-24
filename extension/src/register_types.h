@@ -1,7 +1,7 @@
-#ifndef SUMMATOR_REGISTER_TYPES_H
-#define SUMMATOR_REGISTER_TYPES_H
+#ifndef VGM_AUDIOSTREAM_REGISTER_TYPES_H
+#define VGM_AUDIOSTREAM_REGISTER_TYPES_H
 
-void initialize_summator_types();
-void uninitialize_summator_types();
+void initialize_types();
+void uninitialize_types();
 
-#endif // SUMMATOR_REGISTER_TYPES_H
+#endif // VGM_AUDIOSTREAM_REGISTER_TYPES_H

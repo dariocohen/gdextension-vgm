@@ -1,0 +1,24 @@
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://bceacj0haxfd3"]
+
+[sub_resource type="AudioEffectPhaser" id="AudioEffectPhaser_mjr3m"]
+resource_name = "Phaser"
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_i4npl"]
+resource_name = "Reverb"
+
+[sub_resource type="AudioEffectHighPassFilter" id="AudioEffectHighPassFilter_erspk"]
+resource_name = "HighPassFilter"
+
+[sub_resource type="AudioEffectFilter" id="AudioEffectFilter_rmbe8"]
+resource_name = "Filter"
+
+[resource]
+bus/0/volume_db = -80.0
+bus/0/effect/0/effect = SubResource("AudioEffectPhaser_mjr3m")
+bus/0/effect/0/enabled = true
+bus/0/effect/1/effect = SubResource("AudioEffectReverb_i4npl")
+bus/0/effect/1/enabled = true
+bus/0/effect/2/effect = SubResource("AudioEffectHighPassFilter_erspk")
+bus/0/effect/2/enabled = true
+bus/0/effect/3/effect = SubResource("AudioEffectFilter_rmbe8")
+bus/0/effect/3/enabled = true
