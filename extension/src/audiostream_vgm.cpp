@@ -12,7 +12,7 @@
 // A buffer of about 93ms (at 44100 mix rate)
 const int PCM_BUFFER_SIZE = 4096 * 4;
 
-void check_xmp_result(int returned_code, String prefix);
+void check_gme_result(int returned_code, String prefix);
 
 AudioStreamVGM::AudioStreamVGM() {
 }
@@ -47,8 +47,7 @@ AudioStreamPlaybackVGM::~AudioStreamPlaybackVGM() {
 		pcm_buffer = NULL;
 	}
 	if (ctx) {
-		xmp_end_player(ctx);
-		xmp_free_context(ctx);
+		gme_delete(ctx);
 	}
 }
 
@@ -66,12 +65,14 @@ void AudioStreamPlaybackVGM::setAudioStream(Ref<AudioStreamVGM> audioStream) {
 
 	PackedByteArray data = audioStream->get_data();
 	int load_result = xmp_load_vgm_from_memory(ctx, data.ptr(), data.size());
+	//gme_open_data
 	if (load_result != 0) {
 		check_xmp_result(load_result, "loading vgm");
 		return;
 	}
 
 	xmp_get_vgm_info(ctx, &info);
+	//gme_track_info(emu,&info,0)
 	UtilityFunctions::print(String("Loaded vgm named {0}").format(Array::make(info.mod->name)));
 }
 
@@ -111,7 +112,7 @@ int32_t AudioStreamPlaybackVGM::_mix_resampled(AudioFrame *buffer, int32_t frame
 
 	// TODO Consider allocating buffer on stack, it's inexpensive and will accomodate varying "frames" values
 	// (but see https://stackoverflow.com/q/24732609/38096)
-
+ 
 	int bytes_needed = frames * 4; // 2 bytes per sample, stereo
 
 	// TODO What is the max possible value for "frames"?
@@ -122,8 +123,9 @@ int32_t AudioStreamPlaybackVGM::_mix_resampled(AudioFrame *buffer, int32_t frame
 
 	// Get the needed number of 16 bits PCM samples
 	int play_result = xmp_play_buffer(ctx, pcm_buffer, bytes_needed, 0);
-		if (play_result != 0) {
-		check_xmp_result(play_result, "playing vgm");
+	// gme_play
+	if (play_result != 0) {
+		check_gme_result(play_result, "playing vgm");
 		return 0;
 	}
 
@@ -172,7 +174,7 @@ void AudioStreamVGM::set_data(const PackedByteArray &p_data) {
 	ERR_FAIL_COND_MSG(p_data.is_empty(), "Empty vgm data");
 
 	// We must be stateless (since we are a Resource, so only loaded once),
-	// so libxmp context creation is deferred to AudioStreamPlaybackVGM
+	// so gme context creation is deferred to AudioStreamPlaybackVGM
 	data = p_data;
 
 	ERR_FAIL_COND_MSG(data.is_empty(), "Empty vgm data");
@@ -182,7 +184,7 @@ const PackedByteArray& AudioStreamVGM::get_data() const {
 	return data;
 }
 
-String decode_xmp_error(int returned_code) {
+String decode_gme_error(int returned_code) {
 	switch (returned_code) {
 		case -XMP_ERROR_INTERNAL:
 			return "internal error";
@@ -203,11 +205,11 @@ String decode_xmp_error(int returned_code) {
 	}
 }
 
-void check_xmp_result(int returned_code, String when) {
+void check_gme_result(int returned_code, String when) {
 	if (returned_code == 0) {
 		return;
 	}
 
-	String err = String("An error occured while {0}: {1}").format(Array::make(when, decode_xmp_error(returned_code)));
+	String err = String("An error occured while {0}: {1}").format(Array::make(when, decode_gme_error(returned_code)));
 	UtilityFunctions::printerr(err);
 }
