@@ -14,49 +14,74 @@ import sys
 godot_cpp_env = SConscript("godot-cpp/SConstruct")
 
 # Extracted from game-music-emu/gme/CMakeLists.txt
-GME_SRC = [ "Blip_Buffer.cpp",
-"Blip_Buffer.h",
-"Classic_Emu.cpp",
-"Classic_Emu.h",
-"Data_Reader.cpp",
-"Data_Reader.h",
-"Dual_Resampler.cpp",
-"Dual_Resampler.h",
-"Effects_Buffer.cpp",
-"Effects_Buffer.h",
-"Fir_Resampler.cpp",
-"Fir_Resampler.h",
-"gme.cpp",
-"gme.h",
-"gme_types.h",
-"Gme_File.cpp",
-"Gme_File.h",
-"M3u_Playlist.cpp",
-"M3u_Playlist.h",
-"Multi_Buffer.cpp",
-"Multi_Buffer.h",
-"Music_Emu.cpp",
-"Music_Emu.h",
-"blargg_common.h",
-"blargg_config.h",
-"blargg_endian.h",
-"blargg_source.h"]
+GME_SRC = ["gme/Ay_Apu.cpp",
+"gme/Ay_Cpu.cpp",
+"gme/Ay_Emu.cpp",
+"gme/Blip_Buffer.cpp",
+"gme/Classic_Emu.cpp",
+"gme/Data_Reader.cpp",
+"gme/Dual_Resampler.cpp",
+"gme/Effects_Buffer.cpp",
+"gme/Fir_Resampler.cpp",
+"gme/Gb_Apu.cpp",
+"gme/Gb_Cpu.cpp",
+"gme/Gb_Oscs.cpp",
+"gme/Gbs_Emu.cpp",
+"gme/Gme_File.cpp",
+"gme/Gym_Emu.cpp",
+"gme/Hes_Apu.cpp",
+"gme/Hes_Cpu.cpp",
+"gme/Hes_Emu.cpp",
+"gme/Kss_Cpu.cpp",
+"gme/Kss_Emu.cpp",
+"gme/Kss_Scc_Apu.cpp",
+"gme/M3u_Playlist.cpp",
+"gme/Multi_Buffer.cpp",
+"gme/Music_Emu.cpp",
+"gme/Nes_Apu.cpp",
+"gme/Nes_Cpu.cpp",
+"gme/Nes_Fme7_Apu.cpp",
+"gme/Nes_Namco_Apu.cpp",
+"gme/Nes_Oscs.cpp",
+"gme/Nes_Vrc6_Apu.cpp",
+"gme/Nes_Fds_Apu.cpp",
+"gme/Nes_Vrc7_Apu.cpp",
+"gme/Nsf_Emu.cpp",
+"gme/Nsfe_Emu.cpp",
+"gme/Sap_Apu.cpp",
+"gme/Sap_Cpu.cpp",
+"gme/Sap_Emu.cpp",
+"gme/Sms_Apu.cpp",
+"gme/Snes_Spc.cpp",
+"gme/Spc_Cpu.cpp",
+"gme/Spc_Dsp.cpp",
+"gme/Spc_Emu.cpp",
+"gme/Spc_Filter.cpp",
+"gme/Vgm_Emu.cpp",
+"gme/Vgm_Emu_Impl.cpp",
+"gme/Ym2413_Emu.cpp",
+"gme/Ym2612_Nuked.cpp",
+"gme/Ym2612_GENS.cpp",
+"gme/Ym2612_MAME.cpp",
+"gme/ext/emu2413.c",
+"gme/ext/panning.c",
+"gme/gme.cpp"]
 
 gme_source = []
-libxmp_source.append(["game-music-emu/src/{}".format(f) for f in GME_SRC])
+gme_source.append(["game-music-emu/{}".format(f) for f in GME_SRC])
 
-# Use a dedicated environment for libxmp-lite build
-# Not cloned from godot-cpp Environment since libxmp does not depend on it
-libxmp_env = Environment(CPPPATH=["libxmp/include/"])
-libxmp_env.Append(CCFLAGS=["-DLIBXMP_CORE_PLAYER", "-DLIBXMP_STATIC"])
-libxmp_obj = [libxmp_env.SharedObject(f) for f in libxmp_source] # Make sure -fPIC is added under Linux
-libxmp_lib = libxmp_env.StaticLibrary('libxmp-lite', libxmp_obj)
+# Use a dedicated environment for gme build
+# Not cloned from godot-cpp Environment since gme does not depend on it
+gme_env = Environment(CPPPATH=["game-music-emu/gme/"])
+gme_env.Append(CCFLAGS=["-DBLARGG_LITTLE_ENDIAN=1", "-DBLARGG_BUILD_DLL", "-DLIBGME_VISIBILITY"])
+
+gme_obj = [gme_env.SharedObject(f) for f in gme_source] # Make sure -fPIC is added under Linux
+gme_lib = gme_env.StaticLibrary('gme', gme_obj)
 
 # GDExtension environment is cloned to avoid altering godot-cpp CPPPATH
 env = godot_cpp_env.Clone()
-env.Append(CPPPATH=["extension/src/", "libxmp/include/"])
-env.Append(CCFLAGS=["-DLIBXMP_STATIC"]) # Avoids a LNK2019 under Windows
-env.Append(LIBS=libxmp_lib)
+env.Append(CPPPATH=["extension/src/", "game-music-emu/gme/"])
+env.Append(LIBS=gme_lib)
 sources = Glob("extension/src/*.cpp")
 
 # Boilerplate
