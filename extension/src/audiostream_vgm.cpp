@@ -122,17 +122,11 @@ int32_t AudioStreamPlaybackVGM::_mix_resampled(AudioFrame *buffer, int32_t frame
 		String msg = String("bytes_needed ({0}) > PCM_BUFFER_SIZE ({1})").format(Array::make(bytes_needed, PCM_BUFFER_SIZE));
 		ERR_FAIL_V_MSG(0, msg);
 	}
-
-	// Get the needed number of 16 bits PCM samples
-	int play_result = xmp_play_buffer(ctx, pcm_buffer, bytes_needed, 0);
-	// gme_play
-	if (play_result != 0) {
-		check_gme_result(play_result, "playing vgm");
-		return 0;
-	}
-
-	// Convert samples to Godot format (floats in [-1; 1])
 	int16_t *buf = (int16_t *)pcm_buffer;
+
+	gme_play( emu, bytes_needed, buf );
+	
+	// Convert samples to Godot format (floats in [-1; 1])
 	for(int i = 0; i < frames; i++) {
 		int pos = 2*i;
 		float left = float(buf[pos]) / 32767.0;
@@ -184,34 +178,4 @@ void AudioStreamVGM::set_data(const PackedByteArray &p_data) {
 
 const PackedByteArray& AudioStreamVGM::get_data() const {
 	return data;
-}
-
-String decode_gme_error(int returned_code) {
-	switch (returned_code) {
-		case -XMP_ERROR_INTERNAL:
-			return "internal error";
-		case -XMP_ERROR_FORMAT:
-			return "unrecognized file format";
-		case -XMP_ERROR_LOAD:
-			return "error loading file";
-		case -XMP_ERROR_DEPACK:
-			return "error depacking file";
-		case -XMP_ERROR_SYSTEM:
-			return "system error";
-		case -XMP_ERROR_INVALID:
-			return "invalid parameter";
-		case -XMP_ERROR_STATE:
-			return "invalid player state";
-		default:
-			return "unknown error";
-	}
-}
-
-void check_gme_result(int returned_code, String when) {
-	if (returned_code == 0) {
-		return;
-	}
-
-	String err = String("An error occured while {0}: {1}").format(Array::make(when, decode_gme_error(returned_code)));
-	UtilityFunctions::printerr(err);
 }

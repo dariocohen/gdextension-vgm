@@ -33,7 +33,6 @@ class AudioStreamVGM : public AudioStream {
 
 private:
 	PackedByteArray data; // Owned instance
-
 public:
     AudioStreamVGM();
     Ref<AudioStreamPlayback> _instantiate_playback() const override;
@@ -58,6 +57,7 @@ private:
     bool active; // Are we currently playing?
     void *pcm_buffer;
 
+    Music_Emu* emu;
     // Performance-related fields
     Array stats;
     uint64_t last_stats_log;

@@ -108,7 +108,8 @@
         "format": "cpp",
         "cfenv": "cpp",
         "csignal": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "wave_writer.h": "c"
     },
     "files.exclude": {
         "**/*.tmp": true,
