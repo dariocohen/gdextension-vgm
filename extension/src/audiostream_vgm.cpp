@@ -31,7 +31,7 @@ void AudioStreamVGM::_bind_methods() {
 #define zeromem(to, count) memset(to, 0, count)
 
 AudioStreamPlaybackVGM::AudioStreamPlaybackVGM()
-	: mix_rate(MIN(AudioServer::get_singleton()->get_mix_rate(), XMP_MAX_SRATE)),
+	: mix_rate(MIN(AudioServer::get_singleton()->get_mix_rate(), 44100)),
 	  active(false), last_stats_log(0) {
 	// TODO Is locking actually required?
 	AudioServer::get_singleton()->lock();
@@ -46,8 +46,8 @@ AudioStreamPlaybackVGM::~AudioStreamPlaybackVGM() {
 		memfree(pcm_buffer);
 		pcm_buffer = NULL;
 	}
-	if (ctx) {
-		gme_delete(ctx);
+	if(emu != nullptr) {
+		gme_delete(emu);
 	}
 }
 
@@ -61,31 +61,34 @@ double AudioStreamPlaybackVGM::_get_stream_sampling_rate() const {
 
 void AudioStreamPlaybackVGM::setAudioStream(Ref<AudioStreamVGM> audioStream) {
 	this->audioStream = audioStream;
-	ctx = xmp_create_context();
+	if(emu != nullptr) {
+		gme_delete(emu);
+		emu = nullptr;
+	}
 
 	PackedByteArray data = audioStream->get_data();
-	int load_result = xmp_load_vgm_from_memory(ctx, data.ptr(), data.size());
-	//gme_open_data
-	if (load_result != 0) {
-		check_xmp_result(load_result, "loading vgm");
+	auto err = gme_open_data(data.ptr(),data.size(),&emu,mix_rate);
+	if(err == 0) {
+		err = gme_start_track(emu,0);
+	}
+	else {
+		std::cout << "error opening data\n";
 		return;
 	}
 
-	xmp_get_vgm_info(ctx, &info);
-	//gme_track_info(emu,&info,0)
-	UtilityFunctions::print(String("Loaded vgm named {0}").format(Array::make(info.mod->name)));
+	gme_info_t* info;
+	gme_track_info(emu,&info,0);
+	UtilityFunctions::print(String("Loaded vgm named {0}").format(Array::make(info->song)));
 }
 
 void AudioStreamPlaybackVGM::_start(double from_pos) {
-	xmp_start_player(ctx, mix_rate, 0);
-	//gme_start_track
+	gme_start_track(emu,0);
 	active = true;
 }
 
 void AudioStreamPlaybackVGM::_stop() {
 	active = false;
-	xmp_stop_vgm(ctx);
-	//gme_set_fade?
+	gme_delete(emu);
 }
 
 void AudioStreamPlaybackVGM::_seek(double position) {
@@ -94,8 +97,7 @@ void AudioStreamPlaybackVGM::_seek(double position) {
 	}
 
 	// "position" is in seconds, cmp_seek_time expects ms
-	xmp_seek_time(ctx, position * 1000);
-	//gme_seek
+	gme_seek( emu, position + 1000 );
 }
 
 bool AudioStreamPlaybackVGM::_is_playing() const {
