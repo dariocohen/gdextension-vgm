@@ -13,19 +13,37 @@ import sys
 # Explicitly name godot-cpp environment to avoid tampering with it below
 godot_cpp_env = SConscript("godot-cpp/SConstruct")
 
-# Extracted from libxmp/lite/src/Makefile
-LIBXMP_LITE_SRC = [ "virtual.c", "format.c", "period.c", "player.c", "read_event.c",  "misc.c",
-                   "dataio.c", "lfo.c", "scan.c", "control.c", "filter.c",  "effects.c",
-                   "mixer.c", "mix_all.c", "load_helpers.c", "load.c", "filetype.c", "hio.c",
-                   "smix.c", "memio.c", "win32.c", "md5.c" ]
+# Extracted from game-music-emu/gme/CMakeLists.txt
+GME_SRC = [ "Blip_Buffer.cpp",
+"Blip_Buffer.h",
+"Classic_Emu.cpp",
+"Classic_Emu.h",
+"Data_Reader.cpp",
+"Data_Reader.h",
+"Dual_Resampler.cpp",
+"Dual_Resampler.h",
+"Effects_Buffer.cpp",
+"Effects_Buffer.h",
+"Fir_Resampler.cpp",
+"Fir_Resampler.h",
+"gme.cpp",
+"gme.h",
+"gme_types.h",
+"Gme_File.cpp",
+"Gme_File.h",
+"M3u_Playlist.cpp",
+"M3u_Playlist.h",
+"Multi_Buffer.cpp",
+"Multi_Buffer.h",
+"Music_Emu.cpp",
+"Music_Emu.h",
+"blargg_common.h",
+"blargg_config.h",
+"blargg_endian.h",
+"blargg_source.h"]
 
-# Extracted from libxmp/lite/src/loaders/Makefile
-LIBXMP_LITE_LOADER_SRC = [ "xm_load.c", "mod_load.c", "s3m_load.c", "it_load.c",
-                          "common.c", "itsex.c", "sample.c" ]
-
-libxmp_source = []
-libxmp_source.append(["libxmp/src/{}".format(f) for f in LIBXMP_LITE_SRC])
-libxmp_source.append(["libxmp/src/loaders/{}".format(f) for f in LIBXMP_LITE_LOADER_SRC])
+gme_source = []
+libxmp_source.append(["game-music-emu/src/{}".format(f) for f in GME_SRC])
 
 # Use a dedicated environment for libxmp-lite build
 # Not cloned from godot-cpp Environment since libxmp does not depend on it

@@ -7,6 +7,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/godot-cpp/gen/include",
+                "${workspaceFolder}/game-music-emu/gme",
                 "${workspaceFolder}/src"
             ],
             "defines": [
