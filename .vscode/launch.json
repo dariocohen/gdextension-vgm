@@ -6,9 +6,9 @@
     "configurations": [
         {
 			"name": "Run Demo [FROM EDITOR] - [DEBUG MODE]",
-			"type": "cppvsdbg",
+			"type": "lldb",
 			"request": "launch",
-			"program": "path to the godot executable",
+			"program": "/Applications/Godot.app/Contents/MacOS/Godot",
 			"args": [
 				"--editor",
 				"--path",
@@ -24,9 +24,9 @@
 		},
         {
 			"name": "Run Demo [FROM GAME] - [DEBUG MODE]",
-			"type": "cppvsdbg",
+			"type": "lldb",
 			"request": "launch",
-			"program": "path to the godot executable",
+			"program": "/Applications/Godot.app/Contents/MacOS/Godot",
 			"args": [
 				"--path",
 				"${workspaceFolder}/project",
@@ -41,9 +41,9 @@
 		},
         {
 			"name": "Run Demo [FROM EDITOR] - [TEST MODE]",
-			"type": "cppvsdbg",
+			"type": "lldb",
 			"request": "launch",
-			"program": "path to the godot executable",
+			"program": "/Applications/Godot.app/Contents/MacOS/Godot",
 			"args": [
 				"--editor",
 				"--path",
@@ -56,9 +56,9 @@
 		},
         {
 			"name": "Run Demo [FROM GAME] - [TEST MODE]",
-			"type": "cppvsdbg",
+			"type": "lldb",
 			"request": "launch",
-			"program": "path to the godot executable",
+			"program": "/Applications/Godot.app/Contents/MacOS/Godot",
 			"args": [
 				"--path",
 				"${workspaceFolder}/project",

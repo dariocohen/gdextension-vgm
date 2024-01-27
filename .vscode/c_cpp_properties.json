@@ -8,7 +8,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/godot-cpp/gen/include",
                 "${workspaceFolder}/game-music-emu/gme",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/extension/src"
             ],
             "defines": [
                 "_DEBUG",

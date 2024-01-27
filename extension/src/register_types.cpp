@@ -15,6 +15,7 @@ static Ref<ResourceFormatLoaderVGM> vgm_loader;
 
 void initialize_types(ModuleInitializationLevel p_level)
 {
+	printf("initialize_types\n");
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
@@ -22,11 +23,17 @@ void initialize_types(ModuleInitializationLevel p_level)
 	ClassDB::register_class<AudioStreamVGM>();
 	ClassDB::register_class<AudioStreamPlaybackVGM>();
 
+	printf("Registering class ResourceFormatLoaderVGM\n");
 	ClassDB::register_class<ResourceFormatLoaderVGM>();
+	printf("Registered class ResourceFormatLoaderVGM\n");	
 
+	printf("Instanciating vgm loader\n");
 	vgm_loader.instantiate();
+	printf("Module vgm instanciated\n");
 
+	printf("Registering vgm loader\n");
 	ResourceLoader::get_singleton()->add_resource_format_loader(vgm_loader);
+	printf("Registered vgm loader\n");
 }
 
 void uninitialize_types(ModuleInitializationLevel p_level) {

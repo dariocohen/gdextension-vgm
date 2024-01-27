@@ -1,6 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://dgm4ah3j8jxke"]
+[gd_scene format=3 uid="uid://dgm4ah3j8jxke"]
 
-[sub_resource type="AudioStreamVGM" id="AudioStreamVGM_uqhyb"]
-
-[node name="Main" type="AudioStreamPlayer"]
-stream = SubResource("AudioStreamVGM_uqhyb")
+[node name="Main" type="Node"]
