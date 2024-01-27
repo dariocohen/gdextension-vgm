@@ -7,8 +7,11 @@
 #include <godot_cpp/godot.hpp>
 
 #include "audiostream_vgm.h"
+#include "resource_loader_vgm.h"
 
 using namespace godot;
+
+static Ref<ResourceFormatLoaderVGM> vgm_loader;
 
 void initialize_types(ModuleInitializationLevel p_level)
 {
@@ -18,6 +21,12 @@ void initialize_types(ModuleInitializationLevel p_level)
 
 	ClassDB::register_class<AudioStreamVGM>();
 	ClassDB::register_class<AudioStreamPlaybackVGM>();
+
+	ClassDB::register_class<ResourceFormatLoaderVGM>();
+
+	vgm_loader.instantiate();
+
+	ResourceLoader::get_singleton()->add_resource_format_loader(vgm_loader);
 }
 
 void uninitialize_types(ModuleInitializationLevel p_level) {
