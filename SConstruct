@@ -73,11 +73,12 @@ gme_source.append(["game-music-emu/{}".format(f) for f in GME_SRC])
 # Use a dedicated environment for gme build
 # Not cloned from godot-cpp Environment since gme does not depend on it
 
-gme_env = Environment(CPPPATH=["game-music-emu/gme/"])
-
+gme_env = godot_cpp_env.Clone()
+gme_env.Append(CPPPATH=["game-music-emu/gme/"])
 gme_env.PrependENVPath("PATH", os.getenv("PATH"))
+gme_env.Remove(CXXFLAGS=["-fno-exceptions"])
 gme_env.Append(CPP_FEATURES=["exceptions"])
-gme_env.Append(CCFLAGS=["-DBLARGG_LITTLE_ENDIAN=1", "-DBLARGG_BUILD_DLL", "-DLIBGME_VISIBILITY", "-DVGM_YM2612_NUKED","--target=aarch64-linux-android21", "-march=armv8-a"])
+gme_env.Append(CCFLAGS=["-DBLARGG_LITTLE_ENDIAN=1", "-DBLARGG_BUILD_DLL", "-DLIBGME_VISIBILITY", "-DVGM_YM2612_NUKED"])
 gme_env.Append(CXXFLAGS=["-std=c++11", "-fvisibility-inlines-hidden"])
 
 gme_obj = [gme_env.SharedObject(f) for f in gme_source] # Make sure -fPIC is added under Linux
