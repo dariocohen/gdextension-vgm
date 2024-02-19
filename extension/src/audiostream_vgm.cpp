@@ -46,9 +46,6 @@ AudioStreamPlaybackVGM::~AudioStreamPlaybackVGM() {
 		memfree(pcm_buffer);
 		pcm_buffer = NULL;
 	}
-	if(emu != nullptr) {
-		gme_delete(emu);
-	}
 }
 
 void AudioStreamPlaybackVGM::_bind_methods() {
@@ -115,20 +112,23 @@ int32_t AudioStreamPlaybackVGM::_mix_resampled(AudioFrame *buffer, int32_t frame
 	// TODO Consider allocating buffer on stack, it's inexpensive and will accomodate varying "frames" values
 	// (but see https://stackoverflow.com/q/24732609/38096)
  
-	int bytes_needed = frames * 4; // 2 bytes per sample, stereo
+	int bytes_needed = frames * 2; // 2 bytes per sample, stereo
 
 	// TODO What is the max possible value for "frames"?
 	if (bytes_needed > PCM_BUFFER_SIZE) {
 		String msg = String("bytes_needed ({0}) > PCM_BUFFER_SIZE ({1})").format(Array::make(bytes_needed, PCM_BUFFER_SIZE));
 		ERR_FAIL_V_MSG(0, msg);
 	}
-	int16_t *buf = (int16_t *)pcm_buffer;
+	short *buf = (short *)pcm_buffer;
 
 	gme_play( emu, bytes_needed, buf );
 	
 	// Convert samples to Godot format (floats in [-1; 1])
 	for(int i = 0; i < frames; i++) {
 		int pos = 2*i;
+		short buf_left = buf[pos];
+		short buf_right = buf[pos+1];
+
 		float left = float(buf[pos]) / 32767.0;
 		float right = float(buf[pos+1]) / 32767.0;
 		buffer[i] = { left, right };

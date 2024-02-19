@@ -12,6 +12,7 @@
 *.dblite
 *.pdb
 *.lib
+*.framework
 *.config
 *.creator
 *.creator.user
@@ -19,3 +20,6 @@
 *.includes
 *.idb
 *.exp
+.DS_Store
+
+.vscode
