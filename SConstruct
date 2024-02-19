@@ -79,8 +79,10 @@ gme_env.Append(CPP_FEATURES=["exceptions"])
 gme_env.Append(CCFLAGS=["-DBLARGG_LITTLE_ENDIAN=1", "-DBLARGG_BUILD_DLL", "-DLIBGME_VISIBILITY", "-DVGM_YM2612_NUKED"])
 gme_env.Append(CXXFLAGS=["-std=c++11", "-fvisibility-inlines-hidden"])
 
+platform = ARGUMENTS.get('platform', '')
+
 # Set Android-specific flags
-if 'android' in ARGUMENTS:
+if platform == 'android':
     gme_env.Append(CCFLAGS=["-target", "aarch64-linux-android21", "-march=armv8-a"])
     gme_env.Append(LINKFLAGS=["-shared"])
 
