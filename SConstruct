@@ -73,7 +73,11 @@ gme_source.append(["game-music-emu/{}".format(f) for f in GME_SRC])
 # Use a dedicated environment for gme build
 # Not cloned from godot-cpp Environment since gme does not depend on it
 gme_env = Environment(CPPPATH=["game-music-emu/gme/"])
-gme_env.Append(TARGET_ARCH="AARCH64")
+# Set Android-specific flags
+if 'android' in ARGUMENTS:
+    gme_env.Append(CCFLAGS=["-target", "aarch64-linux-android21", "-march=armv8-a"])
+    gme_env.Append(LINKFLAGS=["-shared"])
+    
 gme_env.PrependENVPath("PATH", os.getenv("PATH"))
 gme_env.Append(CPP_FEATURES=["exceptions"])
 gme_env.Append(CCFLAGS=["-DBLARGG_LITTLE_ENDIAN=1", "-DBLARGG_BUILD_DLL", "-DLIBGME_VISIBILITY", "-DVGM_YM2612_NUKED"])
