@@ -92,14 +92,14 @@ sources = Glob("extension/src/*.cpp")
 # Boilerplate
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "game/bin/libgdaudiostreammodule.{}.{}.framework/libgdaudiostreammodule.{}.{}".format(
+        "game/bin/libgdaudiostreamvgm.{}.{}.framework/libgdaudiostreamvgm.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "game/bin/libgdaudiostreammodule{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "game/bin/libgdaudiostreamvgm{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 
