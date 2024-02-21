@@ -24,6 +24,16 @@ jobs:
             target: template_release
             platform: linux
             arch: x86_64
+          - identifier: mac-debug
+            name: Mac Debug
+            runner: mac-latest
+            target: template_debug
+            platform: mac
+          - identifier: mac-release
+            name: Mac Release
+            runner: mac-latesr
+            target: template_release
+            platform: mac
           - identifier: windows-debug
             name: Windows Debug
             runner: ubuntu-20.04
